@@ -53,6 +53,9 @@ const CARS_DATA: CarData[] = [
   }
 ];
 
+// Framer Motion এর সাথে Next.js Link কে যুক্ত করার জন্য
+const MotionLink = motion.create(Link);
+
 const Hero: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const currentCar = CARS_DATA[currentIndex];
@@ -131,7 +134,7 @@ const Hero: React.FC = () => {
               <div className="overflow-hidden py-1">
                 <motion.p 
                   variants={textRevealVariants}
-                  className="text-lg md:text-xl text-slate-500 max-w-md font-normal leading-relaxed"
+                  className="text-lg md:text-xl text-slate-500 max-w-md font-serif leading-relaxed"
                 >
                   {currentCar.description}
                 </motion.p>
@@ -139,14 +142,13 @@ const Hero: React.FC = () => {
               
               {/* Dynamic Action Button Mask */}
               <div className="overflow-hidden py-2">
-                <Link href={currentCar.btnLink} passHref legacyBehavior>
-                  <motion.a 
-                    variants={textRevealVariants}
-                    className={`inline-block mt-6 ${currentCar.buttonColor} text-white font-semibold px-8 py-3.5 rounded-full transition-all shadow-md ${currentCar.shadowColor} cursor-pointer text-center`}
-                  >
-                    {currentCar.btnText}
-                  </motion.a>
-                </Link>
+                <MotionLink
+                  href={currentCar.btnLink}
+                  variants={textRevealVariants}
+                  className={`inline-block mt-6 ${currentCar.buttonColor} text-white font-semibold px-8 py-3.5 rounded-full transition-all shadow-md ${currentCar.shadowColor} cursor-pointer text-center`}
+                >
+                  {currentCar.btnText}
+                </MotionLink>
               </div>
             </motion.div>
           </AnimatePresence>

@@ -1,7 +1,9 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/shared/Navbar";
+import { Footer } from "@/components/shared/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +31,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar/>
-        {children}</body>
+        <Navbar />
+        {/* এখানে কোনো motion.div লাগবে না, Next.js নিজে থেকেই ভেতরের শিশুদের template.tsx দিয়ে র‍্যাপ করে নিবে */}
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

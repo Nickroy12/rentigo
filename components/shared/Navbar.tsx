@@ -10,11 +10,10 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Home', href: '/' }, // Changed to root path for accurate active matching
-    { label: 'About', href: '/about' },
+  { label: 'Home', href: '/' }, 
+  { label: 'About', href: '/about' },
   { label: 'Rentals', href: '/rentals' },
   { label: 'List Your Property', href: '/list-property' },
-
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -27,13 +26,13 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white  z-50">
+    <nav className="fixed top-0 left-0 w-full bg-white border-b border-gray-100 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           
           {/* Logo */}
           <Link href="/" className="flex flex-col items-center flex-shrink-0">
-            <Image src='/logo.png' width={100} height={40} alt="logo" className="h-auto w-auto"/>
+            <Image src='/logo.png' width={100} height={40} alt="logo" className="h-auto w-auto" priority />
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -56,11 +55,14 @@ export const Navbar: React.FC = () => {
             })}
           </div>
 
-          {/* Desktop Call to Action Button */}
+          {/* Desktop Auth Action Link */}
           <div className="hidden md:flex items-center">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
-              Sign In
-            </button>
+            <Link 
+              href="/auth/SignUp"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+            >
+              Sign Up
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -103,16 +105,22 @@ export const Navbar: React.FC = () => {
                     ? 'text-blue-600 bg-blue-50/50 font-semibold' 
                     : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
                 }`}
-                onClick={() => setIsOpen(false)} // Closes menu on link click
+                onClick={() => setIsOpen(false)}
               >
                 {item.label}
               </Link>
             );
           })}
+          
+          {/* Mobile Auth Section */}
           <div className="pt-4 pb-2 border-t border-gray-100 px-3">
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-              Sign In
-            </button>
+            <Link 
+              href="/auth/SignUp"
+              onClick={() => setIsOpen(false)}
+              className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
+              Sign Up
+            </Link>
           </div>
         </div>
       </div>
