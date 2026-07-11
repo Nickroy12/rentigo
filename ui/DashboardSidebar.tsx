@@ -38,7 +38,7 @@ const consumerLinks: NavigationLink[] = [
 
 const adminLinks: NavigationLink[] = [
   { icon: Home, href: "/dashboard/admin/state", name: "Dashboard", exact: true },
-  { icon: StickyNotePlus, href: "/dashboard/admin/new", name: "Add grocery" },
+  { icon: StickyNotePlus, href: "/dashboard/admin/new", name: "Add New Car" },
   { icon: ShoppingCart, href: "/dashboard/admin/purchaseInfo", name: "Purchase Info" },
   { icon: Settings, href: "/dashboard/profile", name: "Profile" },
 ];

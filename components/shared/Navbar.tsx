@@ -16,7 +16,6 @@ const navItems: NavItem[] = [
   { label: 'Home', href: '/' }, 
   { label: 'About', href: '/about' },
   { label: 'Booking', href: '/rentals' },
-
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -33,6 +32,17 @@ export const Navbar: React.FC = () => {
 
   const toggleMenu = (): void => setIsOpen(!isOpen);
   const toggleDropdown = (): void => setIsDropdownOpen(!isDropdownOpen);
+
+  // রোলের ওপর ভিত্তি করে ডাইনামিক ড্যাশবোর্ড ইউআরএল জেনারেট করার ফাংশন
+  const getDashboardHref = (): string => {
+    if (user?.role === 'admin') {
+      return '/dashboard/admin/state';
+    }
+    if (user?.role === 'renter') {
+      return '/dashboard/renter/status';
+    }
+    return '/dashboard'; // Default fallback
+  };
 
   // Close dropdown if clicking outside of it
   useEffect(() => {
@@ -59,7 +69,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full bg-white  z-50">
+      <nav className="fixed top-0 left-0 w-full bg-white z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             
@@ -131,8 +141,9 @@ export const Navbar: React.FC = () => {
                     </div>
                     
                     <div className="py-1">
+                      {/* ডাইনামিক ড্যাশবোর্ড লিঙ্ক (ডেস্কটপ) */}
                       <Link 
-                        href="/dashboard" 
+                        href={getDashboardHref()} 
                         onClick={() => setIsDropdownOpen(false)}
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                       >
@@ -140,7 +151,7 @@ export const Navbar: React.FC = () => {
                       </Link>
                    
                       <Link 
-                        href="/dashboard/settings" 
+                        href="/dashboard/profile" 
                         onClick={() => setIsDropdownOpen(false)}
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                       >
@@ -250,15 +261,16 @@ export const Navbar: React.FC = () => {
                   <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
                   <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
                 </div>
+                {/* ডাইনামিক ড্যাশবোর্ড লিঙ্ক (মোবাইল) */}
                 <Link 
-                  href="/dashboard"
+                  href={getDashboardHref()}
                   onClick={() => setIsOpen(false)}
                   className="flex gap-3 items-center px-4 py-3 rounded-xl text-base text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors"
                 >
                   <LayoutDashboard className="h-5 w-5" /> Dashboard
                 </Link>
                 <Link 
-                  href="/dashboard/settings"
+                  href="/dashboard/profile"
                   onClick={() => setIsOpen(false)}
                   className="flex gap-3 items-center px-4 py-3 rounded-xl text-base text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors"
                 >
