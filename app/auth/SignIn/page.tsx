@@ -1,22 +1,20 @@
 'use client';
+
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 
-interface SignUpFormData {
-  name: string;
+interface SignInFormData {
   email: string;
   password: string;
-  agreeTerms: boolean;
-  role:string;
+  rememberMe: boolean;
 }
 
-const SignUp: React.FC = () => {
-  const [formData, setFormData] = useState<SignUpFormData>({
-    name: '',
+const SignIn: React.FC = () => {
+  const [formData, setFormData] = useState<SignInFormData>({
     email: '',
     password: '',
-    agreeTerms: false
+    rememberMe: false
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -34,29 +32,26 @@ const SignUp: React.FC = () => {
     e.preventDefault();
     setErrorMessage(null);
     setIsLoading(true);
-    const role: string = "renter";
-    const { data, error } = await authClient.signUp.email({
+
+    const { data, error } = await authClient.signIn.email({
       email: formData.email,
       password: formData.password,
-      role,
-      name: formData.name,
-      
+      // If your auth provider supports rememberMe/sessions flags, configure it here
     });
 
     setIsLoading(false);
 
     if (error) {
-      setErrorMessage(error.message || 'An error occurred during registration.');
-      console.error('Sign up error details:', error);
+      setErrorMessage(error.message || 'Invalid email or password.');
+      console.error('Sign in error details:', error);
       return;
     }
 
-    alert('Form Submitted and authenticated successfully');
+    alert('Authenticated successfully! Welcome back.');
     setFormData({
-      name: '',
       email: '',
       password: '',
-      agreeTerms: false
+      rememberMe: false
     });
   };
 
@@ -64,9 +59,8 @@ const SignUp: React.FC = () => {
     <div className="min-h-screen flex flex-col md:flex-row bg-white">
       
       {/* LEFT PARTITION: Car Rental Showcase with Polygon Clipping */}
-      <div className="hidden md:flex md:w-1/2 lg:w-7/12 relative  items-center justify-start p-12 lg:p-16 overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 lg:w-7/12 relative items-center justify-start p-12 lg:p-16 overflow-hidden">
         
-    
         {/* THE TRIANGLE POLYGON: Dynamic sharp angled accent overlay */}
         <div 
           className="absolute inset-0 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600 mix-blend-multiply opacity-85"
@@ -85,26 +79,26 @@ const SignUp: React.FC = () => {
             🏎️ Rentigo Premium Fleet
           </div>
           <h1 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-200">
-            Drive Your <br />
-            <span className="text-blue-400">Next Adventure</span>
+            Welcome Back <br />
+            <span className="text-blue-400">To The Driver Seat</span>
           </h1>
           <p className="text-base text-gray-300 max-w-md leading-relaxed">
-            Unlock instant keys to premium sedans, rugged off-road SUVs, and high-performance sports cars. Zero hidden fees, infinite miles.
+            Log in to manage your active rentals, modify reservations, or instantly claim your keys to premium vehicles.
           </p>
           
           {/* Quick Rental Badges */}
           <div className="pt-8 border-t border-white/10 grid grid-cols-3 gap-4">
             <div>
               <p className="text-2xl font-extrabold text-blue-400">01</p>
-              <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Choose Car</p>
+              <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Sign In</p>
             </div>
             <div>
               <p className="text-2xl font-extrabold text-blue-400">02</p>
-              <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Pick Date</p>
+              <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Verify Identity</p>
             </div>
             <div>
               <p className="text-2xl font-extrabold text-blue-400">03</p>
-              <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Drive Out</p>
+              <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Unlock Keys</p>
             </div>
           </div>
         </div>
@@ -117,11 +111,12 @@ const SignUp: React.FC = () => {
           {/* Header Text */}
           <div>
             <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight uppercase">
-              Get Behind the Wheel
+              Access Your Profile
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Already have a driver profile?{' '}
-          <Link href={'/auth/SignIn'} className="font-semibold text-blue-600 hover:underline" >Sign Up</Link>
+              New to Rentigo?{' '}
+              
+               <Link href={'/auth/SignUp'} className="font-semibold text-blue-600 hover:underline" >Sign Up</Link>
             </p>
           </div>
 
@@ -135,24 +130,6 @@ const SignUp: React.FC = () => {
           {/* Form */}
           <form className="space-y-5" onSubmit={handleSubmit}>
             
-            {/* Full Name Field */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                disabled={isLoading}
-                value={formData.name}
-                onChange={handleChange}
-                className="appearance-none relative block w-full px-3 py-2.5 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
-                placeholder="John Doe"
-              />
-            </div>
-
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">
@@ -174,14 +151,19 @@ const SignUp: React.FC = () => {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
+                  Password
+                </label>
+                <a href="#" className="text-xs font-semibold text-blue-600 hover:underline">
+                  Forgot password?
+                </a>
+              </div>
               <input
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="new-password"
+                autoComplete="current-password"
                 required
                 disabled={isLoading}
                 value={formData.password}
@@ -191,27 +173,19 @@ const SignUp: React.FC = () => {
               />
             </div>
 
-            {/* Terms Checkbox */}
+            {/* Remember Me Checkbox */}
             <div className="flex items-center">
               <input
-                id="agreeTerms"
-                name="agreeTerms"
+                id="rememberMe"
+                name="rememberMe"
                 type="checkbox"
-                required
                 disabled={isLoading}
-                checked={formData.agreeTerms}
+                checked={formData.rememberMe}
                 onChange={handleChange}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
               />
-              <label htmlFor="agreeTerms" className="ml-2 block text-sm text-gray-600">
-                I agree to the{' '}
-                <a href="#" className="text-blue-600 hover:underline">
-                  Rental Agreement
-                </a>{' '}
-                and{' '}
-                <a href="#" className="text-blue-600 hover:underline">
-                  Privacy Policy
-                </a>
+              <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-600 selection:bg-transparent">
+                Keep me signed in on this device
               </label>
             </div>
 
@@ -228,10 +202,10 @@ const SignUp: React.FC = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    <span>Verifying Profile...</span>
+                    <span>Authenticating...</span>
                   </div>
                 ) : (
-                  'Create Account'
+                  'Sign In'
                 )}
               </button>
             </div>
@@ -244,4 +218,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;
