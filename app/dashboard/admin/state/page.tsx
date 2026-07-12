@@ -38,7 +38,7 @@ const AdminState: React.FC = () => {
       </div>
 
       {/* Grid Cards */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         
         {/* Card: Total Users */}
         <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
