@@ -1,21 +1,42 @@
-import { getAllCar } from '@/lib/api/allCar'
 import React from 'react'
 import Image from 'next/image'
-// Import the required Lucide icons
-import { Eye, Edit3, Trash2 } from 'lucide-react'
+import { Eye } from 'lucide-react'
 import Link from 'next/link';
+import { ConfirmDelete } from '@/ui/Confirm';
+import UpdateAvailable from '@/ui/UpdateAvailable';
+import { getAllCars } from '@/lib/api/allCar';
+import { Pagination } from '@/ui/Pagination';
 
 interface Car {
   id: string | number;
+  _id?: string | number;
   title: string;
   condition: string;
   hiringPrice: number | string;
   image: string;
-  isAvailable: boolean; // Added isAvailable property
+  isAvailable: string; 
 }
 
-const CarManagement = async () => {
-  const cars: Car[] = await getAllCar()
+interface PageProps {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+}
+
+const CarManagement = async ({ searchParams }: PageProps) => {
+  // ১. ইউআরএল থেকে কারেন্ট পেজ বের করা
+  const resolvedSearchParams = await searchParams;
+  const currentPage = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page) : 1;
+
+  // ২. পেজিনেশন কোয়েরিসহ এপিআই কল করা (লিমিট ৮ রাখা হয়েছে)
+  const carsResponse = await getAllCars({
+    page: currentPage,
+    limit: 8
+  });
+
+  // ৩. ডাটা এবং মেটাডাটা সেফটি চেক
+  const cars: Car[] = Array.isArray(carsResponse?.data) ? carsResponse.data : [];
+  const meta = carsResponse?.meta || { page: 1, limit: 8, total: 0, totalPages: 1 };
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -46,74 +67,65 @@ const CarManagement = async () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {cars && cars.length > 0 ? (
-              // Note: Using [...cars].reverse() instead of cars.reverse() to avoid mutating the original array directly in rendering
-              [...cars].reverse().map((car) => (
-                <tr key={car.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    <div className="flex items-center space-x-4">
-                      <div className="relative h-12 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-100 bg-gray-50">
-                        <Image
-                          src={car.image || '/placeholder-car.jpg'}
-                          alt={car.title}
-                          fill
-                          className="object-cover"
-                          sizes="80px"
-                        />
+              cars.map((car) => {
+                const carId = car._id || car.id;
+                const status = car.isAvailable;
+
+                return (
+                  <tr key={carId} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative h-12 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-100 bg-gray-50">
+                          <Image
+                            src={car.image || '/placeholder-car.jpg'}
+                            alt={car.title}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                          />
+                        </div>
+                        <span className="font-semibold text-gray-900">{car.title}</span>
                       </div>
-                      <span className="font-semibold text-gray-900">{car.title}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                      car.condition === 'Excellent' 
-                        ? 'bg-gray-950 text-white' 
-                        : 'bg-blue-600 text-white'
-                    }`}>
-                      {car.condition}
-                    </span>
-                  </td>
-                  {/* New Availability Column Cell */}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                      car.isAvailable 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-950 text-white'
-                    }`}>
-                      {car.isAvailable ? 'Available' : 'Rented'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${car.hiringPrice}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end space-x-2">
-                      {/* View Button */}
-                      <Link href={`/rentals/Details/${car._id}`}
-                        title="View Details"
-                        className="p-2 text-blue-600 rounded-md hover:bg-blue-50 transition-colors"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Link>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
+                        car.condition === 'Excellent' 
+                          ? 'bg-gray-950 text-white' 
+                          : 'bg-blue-600 text-white'
+                      }`}>
+                        {car.condition}
+                      </span>
+                    </td>
+                    
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
+                        status === 'true' ? 'bg-emerald-600 text-white' :
+                        status === 'pending' ? 'bg-zinc-900 text-white' : 
+                        'bg-gray-500 text-white'
+                      }`}>
+                        {status === 'true' ? 'Available' : status === 'pending' ? 'Pending' : 'Rented'}
+                      </span>
+                    </td>
 
-                      {/* Update Button */}
-                      <button 
-                        title="Update Car"
-                        className="p-2 text-blue-600 rounded-md hover:bg-amber-50 transition-colors"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                      </button>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      ${car.hiringPrice}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex items-center justify-end space-x-2">
+                        <Link href={`/rentals/Details/${carId}`}
+                          title="View Details"
+                          className="p-2 text-blue-600 rounded-md hover:bg-blue-50 transition-colors"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Link>
 
-                      {/* Delete Button */}
-                      <button 
-                        title="Delete Car"
-                        className="p-2 text-blue-600 rounded-md hover:bg-red-50 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                        <UpdateAvailable car={car}/>
+                        <ConfirmDelete car={car} />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan={5} className="px-6 py-10 text-center text-sm text-gray-500">
@@ -124,8 +136,10 @@ const CarManagement = async () => {
           </tbody>
         </table>
       </div>
+
+       <Pagination meta={meta} />
     </div>
   )
 }
 
-export default CarManagement
+export default CarManagement;

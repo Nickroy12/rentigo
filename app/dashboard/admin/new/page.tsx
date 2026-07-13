@@ -7,7 +7,7 @@ interface CarFormData {
   title: string;
   description: string;
   condition: 'Excellent' | 'Good' | 'Fair';
-  isAvailable: boolean;
+  isAvailable: 'true' |  'Pending' | 'false';
   hiringPrice: string;
   rating: string;
   image: string;
@@ -18,7 +18,7 @@ const AddCarPage: React.FC = () => {
     title: '',
     description: '',
     condition: 'Excellent',
-    isAvailable: true,
+    isAvailable: 'true',
     hiringPrice: '',
     rating: '5',
     image: ''
@@ -94,7 +94,7 @@ const AddCarPage: React.FC = () => {
     title: '',
     description: '',
     condition: 'Excellent',
-    isAvailable: true,
+    isAvailable: 'true',
     hiringPrice: '',
     rating: '5',
     image: ''

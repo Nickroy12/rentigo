@@ -1,4 +1,6 @@
 import { getCarById } from '@/lib/api/allCar'
+import { getUserSession } from '@/lib/core/session';
+import { WithForm } from '@/ui/ModalForm';
 import React from 'react'
 
 interface PageProps {
@@ -7,7 +9,7 @@ interface PageProps {
 
 // ডেসক্রিপশন স্ট্রিং থেকে ডায়নামিকালি ডেটা এক্সট্রাক্ট করার হেল্পার ফাংশন
 function parseCarDescription(desc: string) {
-  if (!desc) return null;
+  
 
   const overviewMatch = desc.match(/^([\s\S]*?)(?=Key Specifications|$)/i);
   const overview = overviewMatch ? overviewMatch[1].trim() : "";
@@ -43,6 +45,8 @@ function parseCarDescription(desc: string) {
 const DetailsPage = async ({ params }: PageProps) => {
   const { id } = await params;
   const car = await getCarById(id);
+  const user = await getUserSession()
+
 
   // Fallback Data (If API data is missing)
 
@@ -71,7 +75,7 @@ const DetailsPage = async ({ params }: PageProps) => {
                 carData.isAvailable ? "bg-blue-600" : "bg-red-600"
               }`}
             >
-              {carData.isAvailable ? "Available Now" : "Not Available"}
+              {carData.isAvailable === 'true' ? "Available Now" : "Not Available"}
             </span>
           </div>
 
@@ -129,12 +133,8 @@ const DetailsPage = async ({ params }: PageProps) => {
               
               {/* Premium Rent Car Action Space */}
               <div className="flex-[2] flex">
-                <button 
-                  type="button" 
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm transition shadow-md shadow-blue-600/20 dark:shadow-none"
-                >
-                  Rent This Car Now
-                </button>
+              
+                <WithForm user={user} carData={carData} />
               </div>
 
          
