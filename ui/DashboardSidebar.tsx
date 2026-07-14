@@ -32,7 +32,7 @@ interface NavigationLink {
 const consumerLinks: NavigationLink[] = [
   { icon: Home, href: "/dashboard/renter/status", name: "Dashboard", exact: true },
   { icon: TicketPercent, href: "/dashboard/renter/booked", name: "My Booking" },
-  { icon: MessagesSquare, href: "/dashboard/renter/Message", name: "Message" },
+
   { icon: Settings, href: "/dashboard/profile", name: "Profile" },
 ];
 

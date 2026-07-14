@@ -29,6 +29,12 @@ interface IFetchCarsQuery {
   page?: number;
   limit?: number;
 }
+export interface IRentData {
+  _id: string;
+  email: string;
+  createdAt: string; // Dates are transferred as ISO strings over HTTP JSON
+  [key: string]: any; 
+}
 
 // মূল এপিআই কলিং ফাংশন
 export const getAllCars = async (queryParams: IFetchCarsQuery = {}) => {
@@ -52,4 +58,20 @@ export const getAllCars = async (queryParams: IFetchCarsQuery = {}) => {
 export const getCarById = async (carId: string | number): Promise<CarResponse> => {
   const response = await serverFetch<CarResponse>(`/api/car/${carId}`);
   return response as CarResponse;
+};
+export const getCar = async (carId: string | number): Promise<CarResponse> => {
+  const response = await serverFetch<CarResponse>(`/api/car`);
+  return response as CarResponse;
+};
+export const getRent = async (subId: string): Promise<IRentData[]> => {
+  const data = await serverFetch<IRentData[]>(`/api/rent?sub_id=${subId}`);
+  
+  // Safety check since serverFetch returns {} on failure
+  return Array.isArray(data) ? data : [];
+};
+export const getAllRent = async (subId: string): Promise<IRentData[]> => {
+  const data = await serverFetch<IRentData[]>(`/api/rent`);
+  
+  // Safety check since serverFetch returns {} on failure
+  return Array.isArray(data) ? data : [];
 };

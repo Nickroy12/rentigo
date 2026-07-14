@@ -1,9 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button, Label, Modal, Surface, TextField } from "@heroui/react";
 import { Mail } from "lucide-react";
 import { updateCarAvailability } from "@/lib/action/action";
+import { createRentalBooking } from "@/lib/action/rent";
 
 interface User {
   name?: string;
@@ -16,6 +18,7 @@ interface CarData {
   make: string;
   model: string;
   year: number;
+  isAvailable: string;
 }
 
 interface WithFormProps {
@@ -24,7 +27,7 @@ interface WithFormProps {
 }
 
 export function WithForm({ user, carData }: WithFormProps) {
-  // Manage modal open state explicitly 
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,33 +41,31 @@ export function WithForm({ user, carData }: WithFormProps) {
     
     const formData = new FormData(e.currentTarget);
     const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      fromDestination: formData.get("fromDestination"),
-      toDestination: formData.get("toDestination"),
-      pickupDate: formData.get("pickupDate"),
-      pickupTime: formData.get("pickupTime"),
-      message: formData.get("message"),
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      fromDestination: formData.get("fromDestination") as string,
+      toDestination: formData.get("toDestination") as string,
+      pickupDate: formData.get("pickupDate") as string,
+      pickupTime: formData.get("pickupTime") as string,
+      message: formData.get("message") as string,
       carId: carData?._id,
+      cardStatus: "pending"
     };
 
-    console.log("Form Submitted Data:", data);
+    // 1. Create the rental booking record
+    await createRentalBooking(data); 
 
-    try {
-      if (carData?._id) {
-        const res = await updateCarAvailability(carData._id, { isAvailable: "pending" });
-        if (res) {
-          alert('Status Pending');
-          setIsOpen(false); // Close the modal on successful submission
-        }
+    // 2. Update the car availability status
+    if (carData?._id) {
+      const res = await updateCarAvailability(carData._id, { isAvailable: "pending" });
+      if (res) {
+        setIsOpen(false);
+        router.push("/dashboard/renter/booked");
       }
-    } catch (error) {
-      console.error("Submission failed:", error);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
+
+    setIsSubmitting(false);
   };
 
   return (

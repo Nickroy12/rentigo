@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; // 1. Import the router hook
 import { Modal, Button } from "@heroui/react";
 import { Pen, Rocket } from 'lucide-react';
-import { updateCarAvailability } from '@/lib/action/action';
+import { updateCarAvailability, updateRent } from '@/lib/action/action';
 
 const UpdateAvailable = ({ car }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,7 +12,8 @@ const UpdateAvailable = ({ car }) => {
 
   const handleConfirm = async () => {
     const res = await updateCarAvailability(car._id, { isAvailable: "false" });
-    if (res) {
+    const result = await updateRent(car._id, { cardStatus: "true" });
+    if (res && result) {
       alert('Confirm Hired');
       router.refresh(); // 3. Refresh the server data
       router.push('/dashboard/admin/management')
@@ -22,7 +23,8 @@ const UpdateAvailable = ({ car }) => {
 
   const handleReject = async () => {
     const res = await updateCarAvailability(car._id, { isAvailable: "true" });
-    if (res) {
+     const result = await updateRent(car._id, { cardStatus: "false" });
+    if (res && result) {
       alert('Reject Offer');
       router.refresh(); // 3. Refresh the server data
      

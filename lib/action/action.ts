@@ -30,3 +30,11 @@ export const updateCarAvailability = async (id: string, data: { isAvailable: boo
   
   return res;
 };
+export const updateRent = async (id: string, data: { isAvailable: boolean | string }): Promise<any> => {
+  const res = await serverMutation(`/api/rent/${id}`, data, 'PATCH');
+  
+
+ 
+  
+  return res;
+};

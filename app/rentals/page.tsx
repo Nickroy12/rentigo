@@ -56,11 +56,11 @@ await delay(3000)
         </div>
       )}
 
-    {availableCars.length > 8 && (
+ 
         <div className="mt-8">
           <Pagination meta={meta} />
         </div>
-      )}
+     
 
     </div>
   );

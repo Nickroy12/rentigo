@@ -70,13 +70,11 @@ const DetailsPage = async ({ params }: PageProps) => {
               className="w-full h-full object-contain max-h-[320px] hover:scale-105 transition-transform duration-300"
             />
             {/* Dynamic Status Badge */}
-            <span
-              className={`absolute top-4 left-4 text-white px-3 py-1 rounded-full text-xs font-semibold capitalize tracking-wide shadow ${
-                carData.isAvailable ? "bg-blue-600" : "bg-red-600"
-              }`}
-            >
-              {carData.isAvailable === 'true' ? "Available Now" : "Not Available"}
-            </span>
+        {carData.isAvailable === 'true' && (
+  <span className="absolute top-4 left-4 text-white bg-blue-600 px-3 py-1 rounded-full text-xs font-semibold capitalize tracking-wide shadow">
+    Available Now
+  </span>
+)}
           </div>
 
           {/* Details Content Container */}
