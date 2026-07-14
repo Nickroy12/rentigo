@@ -8,7 +8,7 @@ interface SignUpFormData {
   email: string;
   password: string;
   agreeTerms: boolean;
-  role:string;
+  role: string;
 }
 
 const SignUp: React.FC = () => {
@@ -16,7 +16,8 @@ const SignUp: React.FC = () => {
     name: '',
     email: '',
     password: '',
-    agreeTerms: false
+    agreeTerms: false, // 👈 Comma fixed
+    role: 'renter',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -34,13 +35,13 @@ const SignUp: React.FC = () => {
     e.preventDefault();
     setErrorMessage(null);
     setIsLoading(true);
+    
     const role: string = "renter";
     const { data, error } = await authClient.signUp.email({
       email: formData.email,
       password: formData.password,
-      role,
+      role: 'renter',
       name: formData.name,
-      
     });
 
     setIsLoading(false);
@@ -52,11 +53,14 @@ const SignUp: React.FC = () => {
     }
 
     alert('Form Submitted and authenticated successfully');
+    
+    // Reset state including the required 'role' field
     setFormData({
       name: '',
       email: '',
       password: '',
-      agreeTerms: false
+      agreeTerms: false,
+      role: 'user', // 👈 Role added here to fix type error on submit reset
     });
   };
 
@@ -64,9 +68,8 @@ const SignUp: React.FC = () => {
     <div className="min-h-screen flex flex-col md:flex-row bg-white">
       
       {/* LEFT PARTITION: Car Rental Showcase with Polygon Clipping */}
-      <div className="hidden md:flex md:w-1/2 lg:w-7/12 relative  items-center justify-start p-12 lg:p-16 overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 lg:w-7/12 relative items-center justify-start p-12 lg:p-16 overflow-hidden">
         
-    
         {/* THE TRIANGLE POLYGON: Dynamic sharp angled accent overlay */}
         <div 
           className="absolute inset-0 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600 mix-blend-multiply opacity-85"
@@ -121,7 +124,7 @@ const SignUp: React.FC = () => {
             </h2>
             <p className="mt-2 text-sm text-gray-600">
               Already have a driver profile?{' '}
-          <Link href={'/auth/SignIn'} className="font-semibold text-blue-600 hover:underline" >Sign Up</Link>
+              <Link href={'/auth/SignIn'} className="font-semibold text-blue-600 hover:underline" >Sign Up</Link>
             </p>
           </div>
 

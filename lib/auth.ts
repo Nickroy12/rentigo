@@ -6,19 +6,18 @@ const client = new MongoClient(process.env.MONGODB_URL as string);
 const db = client.db('rentigo');
 
 export const auth = betterAuth({
-      emailAndPassword: { 
+  emailAndPassword: { 
     enabled: true, 
   }, 
-  
   database: mongodbAdapter(db, {
-    // Optional: if you don't provide a client, database transactions won't be enabled.
     client
   }),
-  user :{
-    additionalFields:{
-      role:{
+  user: {
+    additionalFields: {
+      role: {
         type: "string",
-        defaultValue: "renter"
+        defaultValue: "renter",
+        input: true // 👈 Allows the field to be received from the client signup form
       }
     }
   }
