@@ -35,7 +35,8 @@ const CarManagement = async ({ searchParams }: PageProps) => {
   });
 
   // ৩. ডাটা এবং মেটাডাটা সেফটি চেক
-  const cars: Car[] = Array.isArray(carsResponse?.data) ? carsResponse.data : [];
+// ৩. ডাটা এবং মেটাডাটা সেফটি চেক
+const cars = (Array.isArray(carsResponse?.data) ? carsResponse.data : []) as unknown as Car[];
   const meta = carsResponse?.meta || { page: 1, limit: 8, total: 0, totalPages: 1 };
 
   return (

@@ -7,6 +7,7 @@ export interface AdminMetrics {
   pendingCar: number;
   totalHiredCar: number;
   serverStatus: 'Healthy' | 'Degraded' | 'Down';
+  totalUsers: number; // 1. Added here to satisfy the type requirement
 }
 
 interface AdminStateProps {
@@ -15,15 +16,23 @@ interface AdminStateProps {
   rentCount: number;
   totalCars?: any[];
   totalCount?: number;
+  totalUsersCount?: number; // 2. Added optional prop to pass user count dynamically
 }
 
-const AdminState: React.FC<AdminStateProps> = ({ availableCount, pendingCount, rentCount, totalCount }) => {
+const AdminState: React.FC<AdminStateProps> = ({ 
+  availableCount, 
+  pendingCount, 
+  rentCount, 
+  totalCount,
+  totalUsersCount = 0 // 3. Destructured with a default value fallback
+}) => {
 
   const [data] = useState<AdminMetrics>({
     totalCar: totalCount || 0,
     pendingCar: pendingCount,
     totalHiredCar: rentCount,
     serverStatus: 'Healthy',
+    totalUsers: totalUsersCount, // 4. Provided to the state object
   });
 
   return (

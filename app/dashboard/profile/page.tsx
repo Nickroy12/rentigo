@@ -1,7 +1,7 @@
-
 import { getUserSession } from "@/lib/core/session";
 import { Mail, User, Calendar } from "lucide-react";
 import Image from "next/image";
+import React from "react"; // Imported React to use React.ReactNode
 
 // Defined the exact interface matching your current user data structure
 interface UserSession {
@@ -11,7 +11,8 @@ interface UserSession {
   emailVerified?: boolean;
 }
 
-const ProfilePage = async (): Promise<JSX.Element> => {
+// Changed JSX.Element to React.ReactNode
+const ProfilePage = async (): Promise<React.ReactNode> => {
   const user: UserSession | null = await getUserSession();
   
   // Dynamic placeholder avatar based on the user's name
@@ -30,9 +31,9 @@ const ProfilePage = async (): Promise<JSX.Element> => {
           {/* Profile Header */}
           <div className="relative px-8 pb-8">
             <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-16">
-           <div className="w-50 h-50 rounded-full flex items-center justify-center text-4xl font-bold shrink-0 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/30">
-            {user?.name?.charAt(0) || "U"}
-          </div>
+              <div className="w-50 h-50 rounded-full flex items-center justify-center text-4xl font-bold shrink-0 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/30">
+                {user?.name?.charAt(0) || "U"}
+              </div>
 
               <div className="flex-1">
                 <h1 className="text-3xl font-bold">

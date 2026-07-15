@@ -36,13 +36,13 @@ const SignUp: React.FC = () => {
     setErrorMessage(null);
     setIsLoading(true);
     
-    const role: string = "renter";
-    const { data, error } = await authClient.signUp.email({
-      email: formData.email,
-      password: formData.password,
-      role: 'renter',
-      name: formData.name,
-    });
+
+const { data, error } = await authClient.signUp.email({
+  email: formData.email,
+  password: formData.password,
+  name: formData.name,
+  role: 'renter',
+} as any); // 👈 Bypasses the strict default type check
 
     setIsLoading(false);
 

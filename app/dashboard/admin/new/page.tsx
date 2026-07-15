@@ -2,12 +2,11 @@
 import { addCar } from '@/lib/action/action';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 
-
 interface CarFormData {
   title: string;
   description: string;
   condition: 'Excellent' | 'Good' | 'Fair';
-  isAvailable: 'true' |  'Pending' | 'false';
+  isAvailable: 'true' | 'Pending' | 'false';
   hiringPrice: string;
   rating: string;
   image: string;
@@ -26,7 +25,6 @@ const AddCarPage: React.FC = () => {
 
   const [image, setImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string>('');
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -38,10 +36,11 @@ const AddCarPage: React.FC = () => {
     }));
   };
 
+  // স্ট্রিং ভিত্তিক টগল লজিক ফিক্স করা হয়েছে
   const handleToggle = () => {
     setFormData((prev) => ({
       ...prev,
-      isAvailable: !prev.isAvailable,
+      isAvailable: prev.isAvailable === 'true' ? 'false' : 'true',
     }));
   };
 
@@ -75,32 +74,32 @@ const AddCarPage: React.FC = () => {
 
       if (data.success) {
         const uploadedUrl = data.data.url;
-        setImageUrl(uploadedUrl);
 
-        // 1. Format data to include image string and convert numeric strings to actual numbers
+        // ডাটা এবং টাইপ সেফটি কনভার্সন
         const finalCarData = {
           ...formData,
           image: uploadedUrl,
-          hiringPrice: parseFloat(formData.hiringPrice),
-          rating: parseFloat(formData.rating),
+          hiringPrice: parseFloat(formData.hiringPrice) || 0,
+          rating: parseFloat(formData.rating) || 5,
         };
         
-        // 2. Call the server mutation action securely
         const uploadData = await addCar(finalCarData);
         
         console.log('Saved Server Database Object:', uploadData);
         alert('Car added successfully!');
-        setFormData({
-    title: '',
-    description: '',
-    condition: 'Excellent',
-    isAvailable: 'true',
-    hiringPrice: '',
-    rating: '5',
-    image: ''
-  })
         
-        // Optional: Reset form fields here if desired
+        // ফর্ম রিসেট
+        setFormData({
+          title: '',
+          description: '',
+          condition: 'Excellent',
+          isAvailable: 'true',
+          hiringPrice: '',
+          rating: '5',
+          image: ''
+        });
+        setImage(null);
+        
       } else {
         alert('Image upload failed. Double check your API key.');
       }
@@ -195,7 +194,7 @@ const AddCarPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Availability Status Theme Switch */}
+        {/* Availability Status Switch */}
         <div className="flex items-center justify-between p-3.5 bg-blue-50/50 border border-blue-100 rounded-xl">
           <div>
             <span className="block text-sm font-bold text-blue-950">Availability Status</span>
@@ -205,12 +204,12 @@ const AddCarPage: React.FC = () => {
             type="button"
             onClick={handleToggle}
             className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${
-              formData.isAvailable ? 'bg-blue-600' : 'bg-slate-300'
+              formData.isAvailable === 'true' ? 'bg-blue-600' : 'bg-slate-300'
             }`}
           >
             <span
               className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                formData.isAvailable ? 'translate-x-5' : 'translate-x-0'
+                formData.isAvailable === 'true' ? 'translate-x-5' : 'translate-x-0'
               }`}
             />
           </button>
@@ -226,7 +225,6 @@ const AddCarPage: React.FC = () => {
             required
             className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 active:file:bg-blue-800 file:transition-all cursor-pointer file:shadow-sm"
           />
-        
         </div>
 
         {/* Form Submission */}

@@ -1,5 +1,5 @@
 // @/app/cars/page.tsx
-import React from 'react';
+import React, { Suspense } from 'react'; // 🚀 Suspense ইম্পোর্ট করা হয়েছে
 
 import { CarCard } from '@/ui/CarCard';
 import { CarFilters } from '@/ui/CarFilters';
@@ -14,9 +14,11 @@ interface PageProps {
     page?: string;
   }>;
 }
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const AllCarsPage = async ({ searchParams }: PageProps) => {
-await delay(3000)
+  await delay(3000);
   const resolvedSearchParams = await searchParams;
 
   const query = {
@@ -42,7 +44,12 @@ await delay(3000)
         <p className="text-slate-500 mt-1">Choose from our premium selection of vehicles for your next journey.</p>
       </div>
 
-      <CarFilters />
+      {/* 🚀 ফিক্স: CarFilters-কে Suspense দিয়ে র‍্যাপ করা হয়েছে যেন বিল্ড এরর না আসে */}
+      <Suspense fallback={
+        <div className="h-16 w-full bg-slate-100 animate-pulse rounded-xl mb-8" />
+      }>
+        <CarFilters />
+      </Suspense>
 
       {availableCars.length === 0 ? (
         <div className="text-center py-16 bg-slate-50 border border-dashed border-slate-200 rounded-2xl">
@@ -56,11 +63,9 @@ await delay(3000)
         </div>
       )}
 
- 
-        <div className="mt-8">
-          <Pagination meta={meta} />
-        </div>
-     
+      <div className="mt-8">
+        <Pagination meta={meta} />
+      </div>
 
     </div>
   );

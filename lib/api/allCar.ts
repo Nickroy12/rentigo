@@ -30,10 +30,12 @@ interface IFetchCarsQuery {
   limit?: number;
 }
 export interface IRentData {
+  cardStatus?: string
   _id: string;
   email: string;
   createdAt: string; // Dates are transferred as ISO strings over HTTP JSON
   [key: string]: any; 
+
 }
 
 // মূল এপিআই কলিং ফাংশন
